@@ -40,12 +40,17 @@ fun intersectTest() {
 }
 
 // Return the set of products that were ordered by every customer
+// think fold like reduce
 fun Shop.getSetOfProductsOrderedByEveryCustomer(): Set<Product> {
     val allProd = customers.flatMap { it.orders }.flatMap { it.products }.toSet()
     return customers.fold(allProd
-        , {orderedByAll,customer->
-            orderedByAll.intersect(customer.orders.flatMap { it.products })}).toSet()
+        , {
+        orderedByAll,customer->
+            orderedByAll.intersect(productsFromCustomer(customer))
+    })
 }
+
+fun productsFromCustomer(customer: Customer): List<Product> = customer.orders.flatMap { it.products }
 
 // Return the most expensive product among all delivered products
 // (use the Order.isDelivered flag)
